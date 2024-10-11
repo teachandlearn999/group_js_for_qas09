@@ -16,4 +16,4 @@ console.log(countDevelopers([
     { firstName: 'Sumayah', lastName: 'M.', country: 'Tajikistan', continent: 'Asia', age: 30, language: 'CSS' },
     { firstName: 'Smith', lastName: 'J.', country: 'USA', continent: 'NorthAmerica', age: 20, language: 'C#' },
     { firstName: 'Doe', lastName: 'B.', country: 'Canada', continent: 'NAm', age: 25, language: 'Java' }
-]));;
+]));
