@@ -1,0 +1,3 @@
+cypress/node_modules/
+cypress/cypress/e2e/1-getting-started
+cypress/cypress/e2e/2-advanced-examples
