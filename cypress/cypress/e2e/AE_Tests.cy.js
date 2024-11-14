@@ -35,6 +35,15 @@ describe("AE Tests", () => {
     }
   });
 
+  context('AE_TestCase9', () => {
+    before(() => {
+        // Clear cookies and localStorage to ensure clean test state
+        cy.clearCookies();
+        cy.clearLocalStorage();
+    })
+})
+
+
 
   it('AE_TestCase1', () => {
     cy.visit('https://automationexercise.com/')
@@ -148,6 +157,72 @@ describe("AE Tests", () => {
     cy.get('div.product-information p').should('be.visible').should('contain', 'Brand:')
     
   })
+
+
+  it("AE_TestCase9", () => {
+    cy.visit('http://automationexercise.com');
+    //home page is visible successfully
+    cy.get('.navbar-nav').should('be.visible');
+    cy.title().should('include', 'Automation Exercise');
+    cy.get('a[href="/products"]').click();
+
+    // user is navigated to ALL PRODUCTS page successfully
+    cy.get('.features_items')
+        .should('be.visible')
+        .and('contain', 'All Products');
+
+    //Enter product name 'top'; in search box, click search button
+    const searchProduct = 'Top';
+
+    cy.get('#search_product')
+        .should('be.visible')
+        .type(searchProduct);
+    searchProduct.toLowerCase().trim();
+    cy.get('#submit_search').click();
+
+    cy.get('.features_items h2')
+        .should('be.visible')
+        .and('contain', 'Searched Products');
+
+    cy.get('.single-products')
+        .should('exist')
+        .and('be.visible');
+
+    cy.get('.features_items .product-image-wrapper')
+        .should('exist')
+        .and('be.visible');
+
+    // Log total number of products found
+    cy.get('.features_items .product-image-wrapper').then($products => {
+      cy.log(`Total products found: ${$products.length}`);
+    });
+
+    cy.get('.features_items .product-image-wrapper')
+        .should('have.length.at.least', 1)
+        .first()
+        .within(() => {
+          cy.get('.productinfo p')
+              .invoke('text')
+              .then(text => {
+                cy.log('Found product:', text);
+              });
+        });
+
+    //verify that search results are displayed
+    cy.get('.features_items').should('contain', 'Rs.');
+
+    // Log all product names for debugging
+    cy.get('.features_items .product-image-wrapper').each(($product, index) => {
+      cy.wrap($product)
+          .find('.productinfo p')
+          .invoke('text')
+          .then(text => {
+            cy.log(`Product ${index + 1}: ${text}`);
+        });
+    });
+  });
+
+
 
 
 });
