@@ -130,4 +130,24 @@ describe("AE Tests", () => {
     cy.get("button.disabled").should("be.visible").should("have.text", "4"); // проверить количество
   });
 
+  
+
+  it("AE_TestCase8", () => {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+    cy.get('a[href="/products"]').click();
+    cy.get('div.features_items').should('contain', 'All Products')
+    cy.get('.features_items').should('be.visible')
+    cy.get('a[href="/product_details/1"]').click()
+    cy.get('div.product-information').should('be.visible')
+    cy.get('.product-information h2').should('be.visible')
+    cy.get('div.product-information p').should('be.visible').should('contain', 'Category')
+    cy.get('div.product-information span span').should('be.visible')
+    cy.get('div.product-information p').should('be.visible').should('contain', 'Availability:')
+    cy.get('div.product-information p').should('be.visible').should('contain', 'Condition:')
+    cy.get('div.product-information p').should('be.visible').should('contain', 'Brand:')
+    
+  })
+
+
 });
