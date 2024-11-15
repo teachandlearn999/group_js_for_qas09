@@ -222,7 +222,7 @@ describe("AE Tests", () => {
     });
   });
 
-  it.only("AE_TestCase6_Contact Us Form", () => {
+  it("AE_TestCase6_Contact Us Form", () => {
     const fileName = 'HTTP_Status.pdf';
     cy.visit("https://www.automationexercise.com/");
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
@@ -242,4 +242,25 @@ describe("AE Tests", () => {
     });
 
   })
+
+  it('AE_TestCase6_version2', () => {
+    cy.visit('https://www.automationexercise.com/');
+    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)');
+    cy.get('.nav a[href="/contact_us"]').click();
+    cy.get('.contact-form h2').should('be.visible').should('have.text', 'Get In Touch');
+    cy.get('input[data-qa="name"]').type(username);
+    cy.get('input[data-qa="email"]').type('email@gmail.com');
+    cy.get('input[data-qa="subject"]').type(`AE_TestCase6_${Date.now()}`);
+    cy.get('#message').type('This is test message.');
+    cy.get('input[name="upload_file"]').attachFile('AE_TC_6.txt');
+    cy.get('input[data-qa="submit-button"]').click();
+    cy.on('window:confirm', (text) => {
+      expect(text).to.contains('Press OK to proceed!');
+      return true; // Нажимаем "OK"
+    });
+    cy.get('.status.alert.alert-success').should('be.visible').should('have.text', 'Success! Your details have been submitted successfully.');
+    cy.get('.btn-success').click();
+    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
+  });
+
 });
