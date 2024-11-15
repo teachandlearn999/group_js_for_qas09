@@ -3,7 +3,7 @@ describe("AE Tests", () => {
   const email = `email${Date.now()}@gmail.com`;
   const password = "password";
   const username = "name";
-  const testsNeedingAccount = ["AE_TestCase2"];
+  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4"];
   const incorrectEmail = `incorrectemail${Date.now()}@g.com`
   const incorrectPass = 'incorrectpassword';
 
@@ -100,7 +100,7 @@ describe("AE Tests", () => {
     cy.get("h2.title.text-center").should("include.text", "Account Deleted!");
   });
 
-  it('AE_TestCase3: Login User with incorrect email and password', () => {
+  it("AE_TestCase3", () => {
     cy.visit('http://automationexercise.com/');
     cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
     cy.get('.nav a[href="/login"]').click();
@@ -110,6 +110,20 @@ describe("AE Tests", () => {
     cy.get('[data-qa="login-button"]').click();
     cy.get('[action="/login"] p').should('be.visible').should('have.text', "Your email or password is incorrect!")
   })
+
+  it("AE_TestCase4", () => {
+    cy.visit('http://automationexercise.com/');
+    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
+    cy.get('.nav a[href="/login"]').click();
+    cy.get(".login-form h2").should("have.text", "Login to your account");
+    cy.get('.login-form input[name="email"]').type(email);
+    cy.get('.login-form input[name="password"]').type(password);
+    cy.get(".btn.btn-default").first().click();
+    cy.contains("Logged in as name").should("be.visible")
+    cy.get(".nav [href='/logout']").click();
+    cy.get(".login-form h2").should("have.text", "Login to your account");
+  })
+
   it("AE_TestCase6", () => {
     const fileName = "HTTP_Status.pdf";
     cy.visit("https://www.automationexercise.com/");
