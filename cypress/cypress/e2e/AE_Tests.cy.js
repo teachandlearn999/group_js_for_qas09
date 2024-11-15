@@ -35,16 +35,6 @@ describe("AE Tests", () => {
     }
   });
 
-  context('AE_TestCase9', () => {
-    before(() => {
-        // Clear cookies and localStorage to ensure clean test state
-        cy.clearCookies();
-        cy.clearLocalStorage();
-    })
-})
-
-
-
   it('AE_TestCase1', () => {
     cy.visit('https://automationexercise.com/')
     cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
@@ -162,6 +152,8 @@ describe("AE Tests", () => {
   it("AE_TestCase9", () => {
     cy.visit('http://automationexercise.com');
     //home page is visible successfully
+    cy.clearCookies();
+    cy.clearLocalStorage();
     cy.get('.navbar-nav').should('be.visible');
     cy.title().should('include', 'Automation Exercise');
     cy.get('a[href="/products"]').click();
@@ -222,7 +214,7 @@ describe("AE Tests", () => {
     });
   });
 
-  it.only("AE_TestCase6_Contact Us Form", () => {
+  it("AE_TestCase6_Contact Us Form", () => {
     const fileName = 'HTTP_Status.pdf';
     cy.visit("https://www.automationexercise.com/");
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
@@ -240,6 +232,23 @@ describe("AE Tests", () => {
     cy.get('#form-section .fa fa-angle-double-left').text(' Home').click();
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     });
+  })
 
+  it("AE_TestCase_21_User can Add review on product", () => {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('a[href="/products"]').click(); //Product button
+    cy.get('h2.title').should('have.text', 'All Products'); // All product page 
+    cy.get('a[href="/product_details/1"]').click(); //Click view product
+    cy.get('.nav li.active a').should('be.visible').should('have.text', 'Write Your Review'); //Verify write your review is visible
+    cy.get('input[id="name"]').type('Rus');
+    cy.get('input[id="email"]').type('rus.gmail.com');
+    cy.get('textarea[id="review"]').type('My new review');
+    cy.get('button[id="button-review"]').click();
+    cy.get('#review-section').invoke('show').find('span').should('have.text', 'Thank you for your review.');
+    // Option #2
+    // cy.get('#review-section').then((el)=>{
+    //     const text = el.show().text().trim();
+    //     expect(text).to.eq('Thank you for your review.');
+    // })
   })
 });
