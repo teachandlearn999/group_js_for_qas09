@@ -5,8 +5,8 @@ describe("AE Tests", () => {
   const username = "name";
   const address1 = "ABC";
   const address2 ="CBD";
-  const testsNeedingAccount = ["AE_TestCase2"];
-
+  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase5"];
+  
   beforeEach(function () {
     if (testsNeedingAccount.includes(this.currentTest.title)) {
       cy.visit("https://www.automationexercise.com/");
@@ -363,4 +363,15 @@ describe("AE Tests", () => {
     cy.get('.nav a[href="/delete_account"]').click();
     cy.get('h2.title.text-center[data-qa="account-deleted"]').should('have.text','Account Deleted!');
  
+//Register User with existing email
+    it.only("AE_TestCase5", () => {
+      cy.visit("https://www.automationexercise.com/");
+      cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+      cy.get('.nav a[href="/login"]').click();
+      cy.get(".signup-form h2").should("be.visible");
+      cy.get('input[data-qa="signup-name"]').type((username));
+      cy.get('input[data-qa="signup-email"]').type(email);
+      cy.get('button[data-qa="signup-button"]').click();
+      cy.get('.signup-form p').should('be.visible')
+    })
 })
