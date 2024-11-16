@@ -4,9 +4,11 @@ describe("AE Tests", () => {
   const password = "password";
   const username = "name";
   const address1 = "ABC";
-  const address2 ="CBD";
-  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase5"];
-  
+  const address2 = "CBD";
+  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4", "AE_TestCase5"];
+  const incorrectEmail = `incorrectemail${Date.now()}@g.com`
+  const incorrectPass = 'incorrectpassword';
+
   beforeEach(function () {
     if (testsNeedingAccount.includes(this.currentTest.title)) {
       cy.visit("https://www.automationexercise.com/");
@@ -87,7 +89,7 @@ describe("AE Tests", () => {
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
   });
 
-  it.only("AE_TestCase2", () => {
+  it("AE_TestCase2", () => {
     cy.visit("https://www.automationexercise.com/");
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('.nav a[href="/login"]').click();
@@ -100,53 +102,86 @@ describe("AE Tests", () => {
     cy.get("h2.title.text-center").should("include.text", "Account Deleted!");
   });
 
-  it("AE_TestCase13", () => {
+  it("AE_TestCase3", () => {
+    cy.visit('http://automationexercise.com/');
+    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
+    cy.get('.nav a[href="/login"]').click();
+    cy.get('.login-form h2').should('be.visible').should('have.text', "Login to your account");
+    cy.get('.login-form input[name="email"]').type(incorrectEmail);
+    cy.get('.login-form input[name="password"]').type(incorrectPass);
+    cy.get('[data-qa="login-button"]').click();
+    cy.get('[action="/login"] p').should('be.visible').should('have.text', "Your email or password is incorrect!")
+  })
+
+  it("AE_TestCase4", () => {
+    cy.visit('http://automationexercise.com/');
+    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
+    cy.get('.nav a[href="/login"]').click();
+    cy.get(".login-form h2").should("have.text", "Login to your account");
+    cy.get('.login-form input[name="email"]').type(email);
+    cy.get('.login-form input[name="password"]').type(password);
+    cy.get(".btn.btn-default").first().click();
+    cy.contains("Logged in as name").should("be.visible")
+    cy.get(".nav [href='/logout']").click();
+    cy.get(".login-form h2").should("have.text", "Login to your account");
+  })
+
+  it("AE_TestCase6", () => {
+    const fileName = "HTTP_Status.pdf";
     cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)"); // проверить homepage
-    cy.get('a[href="/product_details/1"]').click(); // нажать на товар
-    cy.url().should("include", "/product_details/1"); // проверить, что мы на странице товара
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+    cy.get('a[href="/contact_us"]').should("be.visible").click();
+    cy.get("div h2").contains("Get In Touch").should("be.visible");
+    cy.get('input[data-qa="name"]').type("Patrick");
+    cy.get('input[data-qa="email"]').type("a@gmail.com");
+    cy.get('input[data-qa="subject"]').type("About");
+    cy.get("#message.form-control").type("Everything looks good!");
+    // cy.get('input.form-control[type="file"]').attachFile('fileName');
+    cy.get('input[data-qa="submit-button"]').click();
+    cy.on("window:alert", (text) => {
+      expect(text).to.equal("Press OK to proceed").click("OK");
+      cy.get(" div.status.alert.alert-success")
+        .should("be.visible")
+        .should(
+          "have.text",
+          "Success! Your details have been submitted successfully."
+        );
+      cy.get("#form-section .fa fa-angle-double-left").text(" Home").click();
+      cy.get('.nav a[href="/"]').should(
+        "have.css",
+        "color",
+        "rgb(255, 165, 0)"
+      );
+    });
+  });
 
-    cy.get("span span") // сохраняем значение цены в переменную со страницы товара
-      .invoke("text")
-      .then((price1) => {
-        Cypress.env("price1", price1);
-      });
-
-    cy.get("input#quantity").clear(); // очистить текущее количество товара на странице
-    cy.get("input#quantity").type("4"); // выбрать 4 товара
-    cy.get("button.btn.btn-default.cart").click(); // добавить в корзину
-    cy.get('a[href="/view_cart"] u').click(); // посмотреть странцу корзины
-    cy.get('a[href="/product_details/1"]')
+  it("AE_TestCase6_v2", () => {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+    cy.get('.nav a[href="/contact_us"]').click();
+    cy.get(".contact-form h2")
       .should("be.visible")
-      .should("have.text", "Blue Top"); // проверить название товара в корзине
-
-    cy.get(".cart_price p").then(($price2) => {
-      const price2 = $price2.text();
-      const price1 = Cypress.env("price1");
-      expect(price2).to.equal(price1);
-    }); // сравниваем цену в корзине с ценой на странице товара
-
-    cy.get("td.cart_price p")
-      .invoke("text")
-      .then((text) => {
-        const price = +text.replace("Rs. ", ""); // Преобразуем "Rs. 500" в число 500
-
-        cy.get("button.disabled") // Получаем значение из кнопки <button class="disabled">4</button>
-          .invoke("text")
-          .then((buttonText) => {
-            const quantity = +buttonText; // Преобразуем текст "4" в число 4
-
-            cy.get("p.cart_total_price") // Проверяем значение в теге <p class="cart_total_price">Rs. 2000</p>
-              .invoke("text")
-              .then((totalText) => {
-                const totalPrice = +totalText.replace("Rs. ", ""); // Преобразуем "Rs. 2000" в число 2000
-
-                expect(totalPrice).to.equal(price * quantity); // Проверяем, что totalPrice равен price * quantity
-              });
-          });
-      });
-
-    cy.get("button.disabled").should("be.visible").should("have.text", "4"); // проверить количество
+      .should("have.text", "Get In Touch");
+    cy.get('input[data-qa="name"]').type(username);
+    cy.get('input[data-qa="email"]').type("email@gmail.com");
+    cy.get('input[data-qa="subject"]').type(`AE_TestCase6_${Date.now()}`);
+    cy.get("#message").type("This is test message.");
+    cy.get('input[name="upload_file"]').selectFile(
+      "cypress/support/upload_file.txt"
+    );
+    cy.get('input[data-qa="submit-button"]').click();
+    cy.on("window:confirm", (text) => {
+      expect(text).to.contains("Press OK to proceed!");
+      return true;
+    });
+    cy.get(".status.alert.alert-success")
+      .should("be.visible")
+      .should(
+        "have.text",
+        "Success! Your details have been submitted successfully."
+      );
+    cy.get(".btn-success").contains("Home").click();
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
   });
 
   it("AE_TestCase8", () => {
@@ -234,89 +269,55 @@ describe("AE Tests", () => {
     });
   });
 
-  it("AE_TestCase6_Contact Us Form", () => {
-    const fileName = "HTTP_Status.pdf";
+  it("AE_TestCase13", () => {
     cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
-    cy.get('a[href="/contact_us"]').should("be.visible").click();
-    cy.get("div h2").contains("Get In Touch").should("be.visible");
-    cy.get('input[data-qa="name"]').type("Patrick");
-    cy.get('input[data-qa="email"]').type("a@gmail.com");
-    cy.get('input[data-qa="subject"]').type("About");
-    cy.get("#message.form-control").type("Everything looks good!");
-    // cy.get('input.form-control[type="file"]').attachFile('fileName');
-    cy.get('input[data-qa="submit-button"]').click();
-    cy.on("window:alert", (text) => {
-      expect(text).to.equal("Press OK to proceed").click("OK");
-      cy.get(" div.status.alert.alert-success")
-        .should("be.visible")
-        .should(
-          "have.text",
-          "Success! Your details have been submitted successfully."
-        );
-      cy.get("#form-section .fa fa-angle-double-left").text(" Home").click();
-      cy.get('.nav a[href="/"]').should(
-        "have.css",
-        "color",
-        "rgb(255, 165, 0)"
-      );
-    });
-  });
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)"); // проверить homepage
+    cy.get('a[href="/product_details/1"]').click(); // нажать на товар
+    cy.url().should("include", "/product_details/1"); // проверить, что мы на странице товара
 
-  it("AE_TestCase_21_User can Add review on product", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('a[href="/products"]').click(); //Product button
-    cy.get("h2.title").should("have.text", "All Products"); // All product page
-    cy.get('a[href="/product_details/1"]').click(); //Click view product
-    cy.get(".nav li.active a")
-      .should("be.visible")
-      .should("have.text", "Write Your Review"); //Verify write your review is visible
-    cy.get('input[id="name"]').type("Rus");
-    cy.get('input[id="email"]').type("rus.gmail.com");
-    cy.get('textarea[id="review"]').type("My new review");
-    cy.get('button[id="button-review"]').click();
-    cy.get("#review-section")
-      .invoke("show")
-      .find("span")
-      .should("have.text", "Thank you for your review.");
-    // Option #2
-    // cy.get('#review-section').then((el)=>{
-    //     const text = el.show().text().trim();
-    //     expect(text).to.eq('Thank you for your review.');
-    // })
-  });
+    cy.get("span span") // сохраняем значение цены в переменную со страницы товара
+      .invoke("text")
+      .then((price1) => {
+        Cypress.env("price1", price1);
+      });
 
-  it("AE_TestCase6_v2", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
-    cy.get('.nav a[href="/contact_us"]').click();
-    cy.get(".contact-form h2")
+    cy.get("input#quantity").clear(); // очистить текущее количество товара на странице
+    cy.get("input#quantity").type("4"); // выбрать 4 товара
+    cy.get("button.btn.btn-default.cart").click(); // добавить в корзину
+    cy.get('a[href="/view_cart"] u').click(); // посмотреть странцу корзины
+    cy.get('a[href="/product_details/1"]')
       .should("be.visible")
-      .should("have.text", "Get In Touch");
-    cy.get('input[data-qa="name"]').type(username);
-    cy.get('input[data-qa="email"]').type("email@gmail.com");
-    cy.get('input[data-qa="subject"]').type(`AE_TestCase6_${Date.now()}`);
-    cy.get("#message").type("This is test message.");
-    cy.get('input[name="upload_file"]').selectFile(
-      "cypress/support/upload_file.txt"
-    );
-    cy.get('input[data-qa="submit-button"]').click();
-    cy.on("window:confirm", (text) => {
-      expect(text).to.contains("Press OK to proceed!");
-      return true;
-    });
-    cy.get(".status.alert.alert-success")
-      .should("be.visible")
-      .should(
-        "have.text",
-        "Success! Your details have been submitted successfully."
-      );
-    cy.get(".btn-success").contains("Home").click();
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
-  });
-});
+      .should("have.text", "Blue Top"); // проверить название товара в корзине
 
-  it ("AE_TC14_ Place Order: Register while Checkout", () => {
+    cy.get(".cart_price p").then(($price2) => {
+      const price2 = $price2.text();
+      const price1 = Cypress.env("price1");
+      expect(price2).to.equal(price1);
+    }); // сравниваем цену в корзине с ценой на странице товара
+
+    cy.get("td.cart_price p")
+      .invoke("text")
+      .then((text) => {
+        const price = +text.replace("Rs. ", ""); // Преобразуем "Rs. 500" в число 500
+
+        cy.get("button.disabled") // Получаем значение из кнопки <button class="disabled">4</button>
+          .invoke("text")
+          .then((buttonText) => {
+            const quantity = +buttonText; // Преобразуем текст "4" в число 4
+
+            cy.get("p.cart_total_price") // Проверяем значение в теге <p class="cart_total_price">Rs. 2000</p>
+              .invoke("text")
+              .then((totalText) => {
+                const totalPrice = +totalText.replace("Rs. ", ""); // Преобразуем "Rs. 2000" в число 2000
+
+                expect(totalPrice).to.equal(price * quantity); // Проверяем, что totalPrice равен price * quantity
+              });
+          });
+      });
+
+    cy.get("button.disabled").should("be.visible").should("have.text", "4"); // проверить количество
+  });
+  it("AE_TC14_ Place Order: Register while Checkout", () => {
     cy.visit("https://www.automationexercise.com/");
     cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)');
     cy.get('div.overlay-content a.add-to-cart[data-product-id="1"]').click({ force: true });
@@ -361,9 +362,9 @@ describe("AE Tests", () => {
     cy.get('#submit').click();
     cy.get('.col-sm-9 > p').should('have.text', 'Congratulations! Your order has been confirmed!');
     cy.get('.nav a[href="/delete_account"]').click();
-    cy.get('h2.title.text-center[data-qa="account-deleted"]').should('have.text','Account Deleted!');
- 
-//Register User with existing email
+    cy.get('h2.title.text-center[data-qa="account-deleted"]').should('have.text', 'Account Deleted!');
+
+    //Register User with existing email
     it("AE_TestCase5", () => {
       cy.visit("https://www.automationexercise.com/");
       cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
@@ -374,4 +375,27 @@ describe("AE Tests", () => {
       cy.get('button[data-qa="signup-button"]').click();
       cy.get('.signup-form p').should('be.visible')
     })
-})
+  })
+  it("AE_TestCase21", () => {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('a[href="/products"]').click(); //Product button
+    cy.get("h2.title").should("have.text", "All Products"); // All product page
+    cy.get('a[href="/product_details/1"]').click(); //Click view product
+    cy.get(".nav li.active a")
+      .should("be.visible")
+      .should("have.text", "Write Your Review"); //Verify write your review is visible
+    cy.get('input[id="name"]').type("Rus");
+    cy.get('input[id="email"]').type("rus.gmail.com");
+    cy.get('textarea[id="review"]').type("My new review");
+    cy.get('button[id="button-review"]').click();
+    cy.get("#review-section")
+      .invoke("show")
+      .find("span")
+      .should("have.text", "Thank you for your review.");
+    // Option #2
+    // cy.get('#review-section').then((el)=>{
+    //     const text = el.show().text().trim();
+    //     expect(text).to.eq('Thank you for your review.');
+    // })
+  });
+});
