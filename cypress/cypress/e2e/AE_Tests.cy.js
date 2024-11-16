@@ -364,7 +364,7 @@ describe("AE Tests", () => {
     cy.get('h2.title.text-center[data-qa="account-deleted"]').should('have.text','Account Deleted!');
  
 //Register User with existing email
-    it.only("AE_TestCase5", () => {
+    it("AE_TestCase5", () => {
       cy.visit("https://www.automationexercise.com/");
       cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
       cy.get('.nav a[href="/login"]').click();
