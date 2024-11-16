@@ -369,7 +369,7 @@ describe("AE Tests", () => {
       cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
       cy.get('.nav a[href="/login"]').click();
       cy.get(".signup-form h2").should("be.visible");
-      cy.get('input[data-qa="signup-name"]').type((username));
+      cy.get('input[data-qa="signup-name"]').type(username);
       cy.get('input[data-qa="signup-email"]').type(email);
       cy.get('button[data-qa="signup-button"]').click();
       cy.get('.signup-form p').should('be.visible')
