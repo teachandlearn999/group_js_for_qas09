@@ -3,7 +3,9 @@ describe("AE Tests", () => {
   const email = `email${Date.now()}@gmail.com`;
   const password = "password";
   const username = "name";
-  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4"];
+  const address1 = "ABC";
+  const address2 = "CBD";
+  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4", "AE_TestCase5"];
   const incorrectEmail = `incorrectemail${Date.now()}@g.com`
   const incorrectPass = 'incorrectpassword';
 
@@ -339,3 +341,92 @@ describe("AE Tests", () => {
     // })
   });
 });
+
+it("AE_TestCase6_v2", () => {
+  cy.visit("https://www.automationexercise.com/");
+  cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+  cy.get('.nav a[href="/contact_us"]').click();
+  cy.get(".contact-form h2")
+    .should("be.visible")
+    .should("have.text", "Get In Touch");
+  cy.get('input[data-qa="name"]').type(username);
+  cy.get('input[data-qa="email"]').type("email@gmail.com");
+  cy.get('input[data-qa="subject"]').type(`AE_TestCase6_${Date.now()}`);
+  cy.get("#message").type("This is test message.");
+  cy.get('input[name="upload_file"]').selectFile(
+    "cypress/support/upload_file.txt"
+  );
+  cy.get('input[data-qa="submit-button"]').click();
+  cy.on("window:confirm", (text) => {
+    expect(text).to.contains("Press OK to proceed!");
+    return true;
+  });
+  cy.get(".status.alert.alert-success")
+    .should("be.visible")
+    .should(
+      "have.text",
+      "Success! Your details have been submitted successfully."
+    );
+  cy.get(".btn-success").contains("Home").click();
+  cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+});
+
+it("AE_TC14_ Place Order: Register while Checkout", () => {
+  cy.visit("https://www.automationexercise.com/");
+  cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)');
+  cy.get('div.overlay-content a.add-to-cart[data-product-id="1"]').click({ force: true });
+  cy.get('#cartModal  u').click();
+  cy.get('.nav a[href="/view_cart"]').should('have.css', 'color', 'rgb(255, 165, 0)');
+  cy.get('a.check_out').click();
+  cy.get('a[href="/login"] u').click();
+  cy.get('[data-qa="signup-name"]').type(username);
+  cy.get('[data-qa="signup-email"]').type(email);
+  cy.get('[data-qa="signup-button"]').click();
+  cy.get('#id_gender2').click();
+  cy.get('#password').type(password);
+  cy.get('#days').select('1');
+  cy.get('#months').select('1');
+  cy.get('#years').select('2000');
+  cy.get('#newsletter').check();
+  cy.get('#optin').check();
+  cy.get('#first_name').type('Jana');
+  cy.get('#last_name').type('Li');
+  cy.get('#company').type('ABC');
+  cy.get('#address1').type(address1);
+  cy.get('#address2').type(address2);
+  cy.get('#country').select('United States');
+  cy.get('#state').type('TX');
+  cy.get('#city').type('GT');
+  cy.get('#zipcode').type('12345');
+  cy.get('#mobile_number').type('1234567890');
+  cy.get('button[data-qa="create-account"]').click()
+  cy.get('h2[data-qa="account-created"]').should('be.visible').should('have.text', 'Account Created!')
+  cy.get('[data-qa="continue-button"]').click();
+  cy.get('b').contains(username);
+  cy.get('.nav a[href="/view_cart"]').click();
+  cy.get('.col-sm-6 > .btn').click();
+  cy.get('#address_delivery > :nth-child(4)').should('have.text', address1);
+  cy.get('.form-control').type('Comment');
+  cy.get('a[href="/payment').click();
+  cy.get('input[name="name_on_card"]').type(username);
+  cy.get('[data-qa="card-number"]').type(123456789);
+  cy.get('[data-qa="cvc"]').type(123);
+  cy.get('input[name="expiry_month"]').type(12);
+  cy.get('input[name="expiry_year"]').type(2025);
+  cy.get('#submit').click();
+  cy.get('.col-sm-9 > p').should('have.text', 'Congratulations! Your order has been confirmed!');
+  cy.get('.nav a[href="/delete_account"]').click();
+  cy.get('h2.title.text-center[data-qa="account-deleted"]').should('have.text', 'Account Deleted!');
+
+  //Register User with existing email
+  it("AE_TestCase5", () => {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+    cy.get('.nav a[href="/login"]').click();
+    cy.get(".signup-form h2").should("be.visible");
+    cy.get('input[data-qa="signup-name"]').type(username);
+    cy.get('input[data-qa="signup-email"]').type(email);
+    cy.get('button[data-qa="signup-button"]').click();
+    cy.get('.signup-form p').should('be.visible')
+  })
+})
