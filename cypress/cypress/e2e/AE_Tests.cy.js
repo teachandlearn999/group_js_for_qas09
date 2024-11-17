@@ -8,6 +8,7 @@ describe("AE Tests", () => {
   const address1 = "ABC";
   const address2 = "CBD";
   const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4", "AE_TestCase5"];
+  const baseUrl = "https://automationexercise.com/"
 
 
   beforeEach(function () {
@@ -164,6 +165,17 @@ describe("AE Tests", () => {
     cy.get(".status.alert.alert-success").should("be.visible").should("have.text", "Success! Your details have been submitted successfully.");
     cy.get(".btn-success").contains("Home").click();
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+  });
+
+  it('AE_TestCase7', () => {
+    cy.visit(baseUrl);
+    cy.url().should("eq", baseUrl);
+    cy.get("h1").contains("AutomationExercise").should("be.visible");
+    cy.get(".nav a").contains("Home").should("have.css", "color", "rgb(255, 165, 0)");
+    cy.get(".nav a[href='/test_cases']").click();
+    cy.url().should("include", "/test_cases");
+    cy.get("h2.title").should("have.text", "Test Cases")
+    
   });
 
   it("AE_TestCase8", () => {
