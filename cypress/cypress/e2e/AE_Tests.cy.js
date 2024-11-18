@@ -357,5 +357,35 @@ describe("AE Tests", () => {
     //     expect(text).to.eq('Thank you for your review.');
     // })
   });
-  
+
+
+  it("AE_TestCase22", () => {
+        cy.visit('http://automationexercise.com');
+        cy.scrollTo('bottom')
+
+        cy.get('.recommended_items h2.title')
+            .should('be.visible')
+            .invoke('text')
+            .should('match',/recommended items/i)
+
+        cy.get('#recommended-item-carousel .active')
+            .within(() => {
+                cy.get('.add-to-cart')
+                    .should('be.visible')
+                    .first()
+                    .click({ force: true })
+            })
+        cy.get('.modal-body')
+            .should('be.visible')
+            .within(() => {
+                cy.contains('View Cart').click()
+            })
+
+        cy.get('#cart_info_table tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('.shop-menu ul.nav li a[href="/view_cart"]')
+            .should('have.css', 'color', 'rgb(255, 165, 0)')
+    })
 });
