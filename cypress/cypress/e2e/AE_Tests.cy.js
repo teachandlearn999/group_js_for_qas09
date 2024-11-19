@@ -176,30 +176,22 @@ describe("AE Tests", () => {
     cy.get(".navbar-nav").should("be.visible");
     cy.title().should("include", "Automation Exercise");
     cy.get('a[href="/products"]').click();
-
-    // user is navigated to ALL PRODUCTS page successfully
     cy.get(".features_items")
       .should("be.visible")
       .and("contain", "All Products");
-
-    //Enter product name 'top'; in search box, click search button
+    
     const searchProduct = "Top";
 
     cy.get("#search_product").should("be.visible").type(searchProduct);
     searchProduct.toLowerCase().trim();
     cy.get("#submit_search").click();
-
     cy.get(".features_items h2")
       .should("be.visible")
       .and("contain", "Searched Products");
-
     cy.get(".single-products").should("exist").and("be.visible");
-
     cy.get(".features_items .product-image-wrapper")
       .should("exist")
       .and("be.visible");
-
-    // Log total number of products found
     cy.get(".features_items .product-image-wrapper").then(($products) => {
       cy.log(`Total products found: ${$products.length}`);
     });
@@ -214,11 +206,7 @@ describe("AE Tests", () => {
             cy.log("Found product:", text);
           });
       });
-
-    //verify that search results are displayed
     cy.get(".features_items").should("contain", "Rs.");
-
-    // Log all product names for debugging
     cy.get(".features_items .product-image-wrapper").each(($product, index) => {
       cy.wrap($product)
         .find(".productinfo p")
@@ -341,32 +329,28 @@ describe("AE Tests", () => {
 
 
   it("AE_TestCase22", () => {
-        cy.visit('http://automationexercise.com');
-        cy.scrollTo('bottom')
-
-        cy.get('.recommended_items h2.title')
-            .should('be.visible')
-            .invoke('text')
-            .should('match',/recommended items/i)
-
-        cy.get('#recommended-item-carousel .active')
-            .within(() => {
-                cy.get('.add-to-cart')
-                    .should('be.visible')
-                    .first()
-                    .click({ force: true })
-            })
-        cy.get('.modal-body')
-            .should('be.visible')
-            .within(() => {
-                cy.contains('View Cart').click()
-            })
-
-        cy.get('#cart_info_table tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 1)
-
-        cy.get('.shop-menu ul.nav li a[href="/view_cart"]')
-            .should('have.css', 'color', 'rgb(255, 165, 0)')
-    })
+    cy.visit("https://www.automationexercise.com/");
+    cy.scrollTo('bottom');
+    cy.get('.recommended_items h2.title')
+      .should('be.visible')
+      .invoke('text')
+      .should('match',/recommended items/i);
+    cy.get('#recommended-item-carousel .active')
+        .within(() => {
+          cy.get('.add-to-cart')
+              .should('be.visible')
+              .first()
+              .click({ force: true });
+        })
+    cy.get('.modal-body')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('View Cart').click();
+      })
+    cy.get('#cart_info_table tbody tr')
+      .should('be.visible')
+      .should('have.length.at.least', 1);
+    cy.get('.shop-menu ul.nav li a[href="/view_cart"]')
+      .should('have.css', 'color', 'rgb(255, 165, 0)');
+  });
 });
