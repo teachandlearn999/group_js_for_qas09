@@ -329,7 +329,6 @@ describe("AE Tests", () => {
 
 
   it("AE_TestCase22", () => {
-    cy.visit("https://www.automationexercise.com/");
     cy.scrollTo('bottom');
     cy.get('.recommended_items h2.title')
       .should('be.visible')
