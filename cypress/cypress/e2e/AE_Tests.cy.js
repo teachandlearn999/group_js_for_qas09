@@ -156,6 +156,14 @@ describe("AE Tests", () => {
     cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
   });
 
+  it('AE_TestCase7', () => {
+    cy.url().should("eq", "https://www.automationexercise.com/");
+    cy.get("h1").contains("AutomationExercise").should("be.visible");
+    cy.get(".nav a[href='/test_cases']").click();
+    cy.url().should("include", "/test_cases");
+    cy.get("h2.title").should("have.text", "Test Cases")
+  });
+
   it("AE_TestCase8", () => {
     cy.get('a[href="/products"]').click();
     cy.get("div.features_items").should("contain", "All Products");
