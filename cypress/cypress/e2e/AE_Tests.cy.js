@@ -7,13 +7,14 @@ describe("AE Tests", () => {
   const incorrectPass = 'incorrectpassword';
   const address1 = "ABC";
   const address2 = "CBD";
-  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4", "AE_TestCase5"];
-  const baseUrl = "https://automationexercise.com/"
+  const testsNeedingAccount = ["AE_TestCase2", "AE_TestCase4"];
 
 
   beforeEach(function () {
+    cy.visit("https://www.automationexercise.com/");
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
+
     if (testsNeedingAccount.includes(this.currentTest.title)) {
-      cy.visit("https://www.automationexercise.com/");
       cy.get('.nav a[href="/login"]').click();
       cy.get('.signup-form input[name="name"]').type(username);
       cy.get('.signup-form input[name="email"]').type(email);
@@ -42,8 +43,6 @@ describe("AE Tests", () => {
   });
 
   it("AE_TestCase1", () => {
-    cy.visit("https://automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('.nav a[href="/login"]').click();
     cy.get(".signup-form h2").should("be.visible").should("have.text", "New User Signup!");
     cy.get('.signup-form input[name="name"]').type(username);
@@ -78,8 +77,6 @@ describe("AE Tests", () => {
   });
 
   it("AE_TestCase2", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('.nav a[href="/login"]').click();
     cy.get(".login-form h2").should("have.text", "Login to your account");
     cy.get('.login-form input[name="email"]').type(email);
@@ -88,11 +85,11 @@ describe("AE Tests", () => {
     cy.contains("Logged in as name").should("be.visible");
     cy.get('.nav a[href="/delete_account"]').click();
     cy.get("h2.title.text-center").should("include.text", "Account Deleted!");
+    cy.get('a[data-qa="continue-button"]').click();
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
   });
 
   it("AE_TestCase3", () => {
-    cy.visit('http://automationexercise.com/');
-    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
     cy.get('.nav a[href="/login"]').click();
     cy.get('.login-form h2').should('be.visible').should('have.text', "Login to your account");
     cy.get('.login-form input[name="email"]').type(incorrectEmail);
@@ -102,8 +99,6 @@ describe("AE Tests", () => {
   })
 
   it("AE_TestCase4", () => {
-    cy.visit('http://automationexercise.com/');
-    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)')
     cy.get('.nav a[href="/login"]').click();
     cy.get(".login-form h2").should("have.text", "Login to your account");
     cy.get('.login-form input[name="email"]').type(email);
@@ -116,8 +111,6 @@ describe("AE Tests", () => {
 
   //Register User with existing email
   it("AE_TestCase5", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('.nav a[href="/login"]').click();
     cy.get(".signup-form h2").should("be.visible");
     cy.get('input[data-qa="signup-name"]').type(username);
@@ -128,8 +121,6 @@ describe("AE Tests", () => {
 
   it("AE_TestCase6", () => {
     const fileName = "HTTP_Status.pdf";
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('a[href="/contact_us"]').should("be.visible").click();
     cy.get("div h2").contains("Get In Touch").should("be.visible");
     cy.get('input[data-qa="name"]').type("Patrick");
@@ -148,8 +139,6 @@ describe("AE Tests", () => {
   });
 
   it("AE_TestCase6_v2", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('.nav a[href="/contact_us"]').click();
     cy.get(".contact-form h2").should("be.visible").should("have.text", "Get In Touch");
     cy.get('input[data-qa="name"]').type(username);
@@ -168,19 +157,14 @@ describe("AE Tests", () => {
   });
 
   it('AE_TestCase7', () => {
-    cy.visit(baseUrl);
-    cy.url().should("eq", baseUrl);
+    cy.url().should("eq", "https://www.automationexercise.com/");
     cy.get("h1").contains("AutomationExercise").should("be.visible");
-    cy.get(".nav a").contains("Home").should("have.css", "color", "rgb(255, 165, 0)");
     cy.get(".nav a[href='/test_cases']").click();
     cy.url().should("include", "/test_cases");
     cy.get("h2.title").should("have.text", "Test Cases")
-    
   });
 
   it("AE_TestCase8", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
     cy.get('a[href="/products"]').click();
     cy.get("div.features_items").should("contain", "All Products");
     cy.get(".features_items").should("be.visible");
@@ -195,8 +179,6 @@ describe("AE Tests", () => {
   });
 
   it("AE_TestCase9", () => {
-    cy.visit("http://automationexercise.com");
-    //home page is visible successfully
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.get(".navbar-nav").should("be.visible");
@@ -256,8 +238,6 @@ describe("AE Tests", () => {
   });
 
   it("AE_TestCase13", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)"); // проверить homepage
     cy.get('a[href="/product_details/1"]').click(); // нажать на товар
     cy.url().should("include", "/product_details/1"); // проверить, что мы на странице товара
 
@@ -305,8 +285,6 @@ describe("AE Tests", () => {
   });
   
   it("AE_TC14_ Place Order: Register while Checkout", () => {
-    cy.visit("https://www.automationexercise.com/");
-    cy.get('.nav a[href="/"]').should('have.css', 'color', 'rgb(255, 165, 0)');
     cy.get('div.overlay-content a.add-to-cart[data-product-id="1"]').click({ force: true });
     cy.get('#cartModal  u').click();
     cy.get('.nav a[href="/view_cart"]').should('have.css', 'color', 'rgb(255, 165, 0)');
@@ -353,7 +331,6 @@ describe("AE Tests", () => {
   })
 
   it("AE_TestCase21", () => {
-    cy.visit("https://www.automationexercise.com/");
     cy.get('a[href="/products"]').click(); //Product button
     cy.get("h2.title").should("have.text", "All Products"); // All product page
     cy.get('a[href="/product_details/1"]').click(); //Click view product
