@@ -69,7 +69,7 @@ describe("AE Tests", () => {
     cy.get('h2[data-qa="account-created"]').should("be.visible").should("have.text", "Account Created!");
     cy.get('a[data-qa="continue-button"]').click();
     cy.get(".navbar-nav li:last-child a").should("be.visible").should("contain", `Logged in as ${username}`);
-    cy.get(".navbar-nav li:last-child a b").should("have.css","font-weight","700");
+    cy.get(".navbar-nav li:last-child a b").should("have.css", "font-weight", "700");
     cy.get('.navbar-nav a[href="/delete_account"]').click();
     cy.get("h2.title").should("be.visible").should("have.text", "Account Deleted!");
     cy.get('a[data-qa="continue-button"]').click();
@@ -132,9 +132,9 @@ describe("AE Tests", () => {
     cy.on("window:alert", (text) => {
       expect(text).to.equal("Press OK to proceed").click("OK");
     });
-    cy.get(" div.status.alert.alert-success").should("be.visible").should("have.text","Success! Your details have been submitted successfully.");
+    cy.get(" div.status.alert.alert-success").should("be.visible").should("have.text", "Success! Your details have been submitted successfully.");
     cy.get("#form-section .fa fa-angle-double-left").text(" Home").click();
-    cy.get('.nav a[href="/"]').should("have.css","color","rgb(255, 165, 0)");
+    cy.get('.nav a[href="/"]').should("have.css", "color", "rgb(255, 165, 0)");
 
   });
 
@@ -237,6 +237,17 @@ describe("AE Tests", () => {
     });
   });
 
+  it("AE_TestCase10", () => {
+    cy.log('Verify Subscription in home page')
+    cy.get('.nav a[href="/login"]').click();
+    cy.get(".signup-form h2").should("be.visible");
+    cy.scrollTo('500px');
+    cy.get(".single-widget h2").should("be.visible");
+    cy.get("#susbscribe_email").type(email);
+    cy.get('.searchform #subscribe').click();
+    cy.get('div.form-row').should("contain", "You have been successfully subscribed!");;
+  });
+
   it("AE_TestCase13", () => {
     cy.get('a[href="/product_details/1"]').click(); // нажать на товар
     cy.url().should("include", "/product_details/1"); // проверить, что мы на странице товара
@@ -283,7 +294,7 @@ describe("AE Tests", () => {
 
     cy.get("button.disabled").should("be.visible").should("have.text", "4"); // проверить количество
   });
-  
+
   it("AE_TC14_ Place Order: Register while Checkout", () => {
     cy.get('div.overlay-content a.add-to-cart[data-product-id="1"]').click({ force: true });
     cy.get('#cartModal  u').click();
@@ -346,5 +357,4 @@ describe("AE Tests", () => {
     //     expect(text).to.eq('Thank you for your review.');
     // })
   });
-  
 });
