@@ -237,6 +237,17 @@ describe("AE Tests", () => {
     });
   });
 
+  it("AE_TestCase10", () => {
+    cy.log('Verify Subscription in home page')
+    cy.get('.nav a[href="/login"]').click();
+    cy.get(".signup-form h2").should("be.visible");
+    cy.scrollTo('500px');
+    cy.get(".single-widget h2").should("be.visible");
+    cy.get("#susbscribe_email").type(email);
+    cy.get('.searchform #subscribe').click();
+    cy.get('div.form-row').should("contain", "You have been successfully subscribed!");;
+  });
+
   it("AE_TestCase13", () => {
     cy.get('a[href="/product_details/1"]').click(); // нажать на товар
     cy.url().should("include", "/product_details/1"); // проверить, что мы на странице товара
@@ -346,16 +357,4 @@ describe("AE Tests", () => {
     //     expect(text).to.eq('Thank you for your review.');
     // })
   });
-
-  it("AE_TestCase10", () => {
-    cy.log('Verify Subscription in home page')
-    cy.get('.nav a[href="/login"]').click();
-    cy.get(".signup-form h2").should("be.visible");
-    cy.scrollTo('500px');
-    cy.get(".single-widget h2").should("be.visible");
-    cy.get("#susbscribe_email").type(email);
-    cy.get('.searchform #subscribe').click();
-    cy.get('div.form-row').should("contain", "You have been successfully subscribed!");;
-  });
-
 });
